@@ -58,7 +58,7 @@ In your DAO/Mapper code, you will see:
 </pre>
 </li>
 <li>
-<b>Advance Clause Example</b>, default mybatis generator sql statement style is: "select columns from table where <b>(a and b and c ...) OR (d and e and f ... ) OR (... and ...)</b>", in some case, this is really inconvenient, for example, you want you sql as follow:<br>
+<b>Advanced Clause Example</b>, default mybatis generator sql statement style is: "select columns from table where <b>(a and b and c ...) OR (d and e and f ... ) OR (... and ...)</b>", in some case, this is really inconvenient, for example, you want you sql as follow:<br>
 select columns from table where <b>(a or b) and c</b>, to suit mybatis generator, you must use its equivalent form - <br>
 select columns from table where <b>(a and c) or (b and c)</b>, if this is complex, it is hard to transform it.
 <pre>
