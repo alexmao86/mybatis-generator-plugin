@@ -3,7 +3,22 @@
 
 This project is plugin suite for mybatis generator. What is mybatis generator, please see http://www.mybatis.org/generator/. The generator is handy to use, but there are still some not handy parts:
 <ul>
-<li><b>Subquery</b> I want to execute sql like this, select c1, c2, ..., cn from table where <b>c1 in (select cc1 as c1 from table 1 where cc2 = ?)</b>, there is no generated code sourde for this.<br>
+<li><b>Subquery</b> I want to execute sql like this, select c1, c2, ..., cn from table where <b>c1 in (select cc1 as c1 from table 1 where cc2 = 1)</b>, there is no generated code sourde for this. Using offical generator, you will write code like this:<br>
+<pre>
+YourOtherDomainExample e=new YourOtherDomainExample();
+e.createCriteria().andCc2Equals(1);
+List yourOtherDomainList = YourOtherDomainMapper.selectByExample(e);
+
+//then constructe one list of id
+list idList=new ArrayList(yourOtherDomainList.size());
+for(YourOtherDomain d:yourOtherDomainList) idList.add(d.getCc1());
+
+//use IdInList query
+YourDomainExample e1=new YourDomainExample();
+e1.createCriteria().andC1In(idList);
+YourDomainMapper.selectByExample(e1);
+
+</pre>
 <pre>
 &lt;plugin type="net.sourceforge.jweb.mybatis.generator.plugins.SubqueryCriteriaPlugin"/&gt; DO it
 </pre>
