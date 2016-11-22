@@ -83,4 +83,12 @@ YourDomainExample{
 }
 </pre>
 </li>
+<li>
+Some annotations plugin
+<pre>
+net.sourceforge.jweb.mybatis.generator.plugins.OptionsAnnotationPlugin
+net.sourceforge.jweb.mybatis.generator.plugins.CacheAnnotationPlugin
+net.sourceforge.jweb.mybatis.generator.plugins.ModelBuilderPlugin
+</pre>
+</li>
 </ul>
