@@ -92,3 +92,18 @@ net.sourceforge.jweb.mybatis.generator.plugins.ModelBuilderPlugin
 </pre>
 </li>
 </ul>
+<pre>
+&lt;repository&gtl
+    &lt;id&gtlSonatype OSS Snapshot Repository&lt;/id&gtl
+    &lt;url&gtlhttp://oss.sonatype.org/content/repositories/snapshots&lt;/url&gtl
+&lt;/repository&gtl
+&lt;repository&gtl
+    &lt;id&gtlSonatype OSS Release Repository&lt;/id&gtl
+    &lt;url&gtlhttps://oss.sonatype.org/service/local/staging/deploy/maven2&lt;/url&gtl
+&lt;/repository&gtl
+&lt;dependency&gtl
+  &lt;groupId&gtlcom.github.alexmao86&lt;/groupId&gtl
+  &lt;artifactId&gtlmaven-jweb-plugin&lt;/artifactId&gtl
+  &lt;version&gtl1.0&lt;/version&gtl
+&lt;/dependency&gtl
+</pre>
