@@ -93,17 +93,17 @@ net.sourceforge.jweb.mybatis.generator.plugins.ModelBuilderPlugin
 </li>
 </ul>
 <pre>
-&lt;repository&gtl
-    &lt;id&gtlSonatype OSS Snapshot Repository&lt;/id&gtl
-    &lt;url&gtlhttp://oss.sonatype.org/content/repositories/snapshots&lt;/url&gtl
-&lt;/repository&gtl
-&lt;repository&gtl
-    &lt;id&gtlSonatype OSS Release Repository&lt;/id&gtl
-    &lt;url&gtlhttps://oss.sonatype.org/service/local/staging/deploy/maven2&lt;/url&gtl
-&lt;/repository&gtl
-&lt;dependency&gtl
-  &lt;groupId&gtlcom.github.alexmao86&lt;/groupId&gtl
-  &lt;artifactId&gtlmaven-jweb-plugin&lt;/artifactId&gtl
-  &lt;version&gtl1.0&lt;/version&gtl
-&lt;/dependency&gtl
+&lt;repository&gt;
+    &lt;id&gtlSonatype OSS Snapshot Repository&lt;/id&gt;
+    &lt;url&gtlhttp://oss.sonatype.org/content/repositories/snapshots&lt;/url&gt;
+&lt;/repository&gt;
+&lt;repository&gt;
+    &lt;id&gtlSonatype OSS Release Repository&lt;/id&gt;
+    &lt;url&gtlhttps://oss.sonatype.org/service/local/staging/deploy/maven2&lt;/url&gt;
+&lt;/repository&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.github.alexmao86&lt;/groupId&gt;
+  &lt;artifactId&gt;maven-jweb-plugin&lt;/artifactId&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+&lt;/dependency&gt;
 </pre>
