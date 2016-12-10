@@ -1,0 +1,38 @@
+http://www.mybatis.org/generator/configreference/context.html
+
+重要元素的说明:
+
+Context@defaultModelType: ibatis2和mybatis3通用
+HIERARCHICAL, 表示采用继承式生成java模型,如含有主键则生成XXX entends XXXKey
+FLAT, model采用平的结构产生
+CONDITIONAL ?
+
+
+Context@targetRuntime: 
+Ibatis2Java2, 会使用IntrospectedTableIbatis2Java2Impl实现
+Ibatis2Java5, 会使用IntrospectedTableIbatis2Java5Impl实现
+MyBatis3, 会使用org.mybatis.generator.codegen.mybatis3.IntrospectedTableMyBatis3Impl实现
+MyBatis3Simple,会使用org.mybatis.generator.codegen.mybatis3.IntrospectedTableMyBatis3SimpleImpl实现
+
+核心配置：
+Ibatis2主要是javaModelGenerator, sqlMapGenerator, daoGenerator
+Mybatis3主要是javaModelGenerator, sqlMapGenerator, javaClientGenerator
+
+DAOGenerator只适用于ibatis2的生成器配置，github新式的生成器无此配置
+daoGenerator@type: 
+	IBATIS, 生成继承com.ibatis.dao.client.template.SqlMapDaoTemplate的DAOImpl，具有从com.ibatis.dao.client.DaoManager为参数的构造方法
+	SPRING: 生成的DAOImpl继承org.springframework.orm.ibatis.support.SqlMapClientDaoSupport， 具有默认构造方法
+	GENERIC-CI: 生成无继承的DAOImpl, 但是使用com.ibatis.sqlmap.client.SqlMapClient为参数的构造方法. 
+	GGENERIC-SI: 生成无继承的DAOImpl, 无参数构造方法，但是具有setSqlClient方法。这是自己习惯的ibatis2使用方法
+注：Ibatis2Java2和Ibatis2Java5无区别，只是使用泛型的问题
+
+javaClientGenerator仅适用于mybatis3
+javaClientGenerator@type:
+	XMLMAPPER: 纯XML风格
+	MIXEDMAPPER: 混合风格(不适用于MyBatis3Simple)
+	ANNOTATEDMAPPER: 基于Annotation风格
+	MAPPER:
+
+	
+
+	
