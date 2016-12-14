@@ -8,7 +8,9 @@
 	<packaging>maven-plugin</packaging>
 
 	<name>maven-jweb-plugin</name>
-	
+	<description>
+	maven plugins and mybatis generator plugins
+	</description>
 	<url>https://github.com/alexmao86/mybatis-generator-plugin.git</url>
 	<licenses>
 		<license>
@@ -172,4 +174,5 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 		</repository>
 	</distributionManagement>
+	<description>this project is suite of maven plugins and mybatis generator plugins for simplify javaEE development</description>
 </project>
