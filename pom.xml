@@ -174,5 +174,4 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 		</repository>
 	</distributionManagement>
-	<description>this project is suite of maven plugins and mybatis generator plugins for simplify javaEE development</description>
 </project>
