@@ -3,7 +3,7 @@
 
 This project is plugin suite for mybatis generator. What is mybatis generator, please see http://www.mybatis.org/generator/. The generator is handy to use, but there are still some not handy parts:
 <ul>
-<li><b>Subquery</b> I want to execute sql like this, select c1, c2, ..., cn from table where <b>c1 in (select cc1 as c1 from table 1 where cc2 = 1)</b>, there is no generated code sourde for this. Using offical generator, you will write code like this:<br>
+<li><b>Subquery</b> I want to execute sql like this, select c1, c2, ..., cn from table where <b>c1 in (select cc1 as c1 from table 1 where cc2 = 1)</b>, there is no generated code source for this. Using offical generator, you will write code like this:<br>
 <pre>
 YourOtherDomainExample e=new YourOtherDomainExample();
 e.createCriteria().andCc2Equals(1);
