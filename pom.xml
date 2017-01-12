@@ -75,15 +75,23 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>3.3</version>
 				<configuration>
 					<goalPrefix>jweb</goalPrefix>
+					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
 				</configuration>
 				<executions>
 					<execution>
 						<id>generated-helpmojo</id>
 						<goals>
 							<goal>helpmojo</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>mojo-descriptor</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>descriptor</goal>
 						</goals>
 					</execution>
 				</executions>
