@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.Method;
@@ -99,9 +100,36 @@ public class PagePlugin extends RowBoundsPlugin {
 	}
 
 	private void copyAndAddMethod(Method method, Interface interfaze) {
-		Method newMethod = new Method(method);
+		Method newMethod = new Method(method){
+			public void addFormattedAnnotations(StringBuilder sb, int indentLevel){
+				super.addFormattedAnnotations(sb, indentLevel);
+				OutputUtilities.javaIndent(sb, indentLevel);
+				sb.append("__S__T__E__");//to make code formatted well, here add one dummy mark here, then remove improper indent
+			}
+			//remove improper indent, replace it with generic declaration
+			public String getFormattedContent(int indentLevel, boolean interfaceMethod) {
+				String content = super.getFormattedContent(indentLevel, interfaceMethod);
+				return content.replaceAll("__S__T__E__\\s+", "<T> ");
+			}
+		};
 		newMethod.setName(method.getName() + "WithRowbounds");
-		newMethod.addParameter(new Parameter(this.pageBound, "rowBounds"));
+		newMethod.addParameter(new Parameter(this.pageBound, "rowBounds"){
+			public String getFormattedContent() {
+				StringBuilder sb = new StringBuilder();
+			    for (String annotation : getAnnotations()){
+			      sb.append(annotation);
+			      sb.append(' ');
+			    }
+			    sb.append(getType().getShortName()).append("<T>");//add generic
+			    if (this.isVarargs()) {
+			      sb.append("...");
+			    }
+			    sb.append(' ');
+			    sb.append(getName());
+			    
+			    return sb.toString();
+			}
+		});
 		interfaze.addMethod(newMethod);
 		interfaze.addImportedType(this.pageBound);
 	}
