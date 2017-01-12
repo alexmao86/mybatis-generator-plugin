@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.github.alexmao86</groupId>
-	<artifactId>maven-jweb-plugin</artifactId>
-	<version>1.0.2</version>
+	<artifactId>jweb-maven-plugin</artifactId>
+	<version>1.0.3</version>
 	<packaging>maven-plugin</packaging>
 
-	<name>maven-jweb-plugin</name>
+	<name>jweb-maven-plugin</name>
 	<description>
 	maven plugins and mybatis generator plugins
 	</description>
@@ -37,21 +37,26 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven.plugin-tools</groupId>
+			<artifactId>maven-plugin-annotations</artifactId>
+			<version>3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>3.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-model</artifactId>
+			<version>3.3.9</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-plugin-api</artifactId>
-			<version>2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-model</artifactId>
-			<version>2.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.yahoo.platform.yui</groupId>
@@ -86,7 +91,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>3.2</version>
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
