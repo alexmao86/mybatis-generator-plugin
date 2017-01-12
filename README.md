@@ -103,7 +103,7 @@ net.sourceforge.jweb.mybatis.generator.plugins.ModelBuilderPlugin
 &lt;/repository&gt;
 &lt;dependency&gt;
   &lt;groupId&gt;com.github.alexmao86&lt;/groupId&gt;
-  &lt;artifactId&gt;maven-jweb-plugin&lt;/artifactId&gt;
+  &lt;artifactId&gt;jweb-maven-plugin&lt;/artifactId&gt;
   &lt;version&gt;1.0&lt;/version&gt;
 &lt;/dependency&gt;
 </pre>
