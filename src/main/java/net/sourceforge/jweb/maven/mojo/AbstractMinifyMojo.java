@@ -23,6 +23,7 @@ import net.sourceforge.jweb.maven.util.AntPathMatcher;
 
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * 
@@ -33,18 +34,9 @@ import org.apache.maven.plugin.AbstractMojo;
 public abstract class AbstractMinifyMojo extends AbstractMojo{
 	public static final String DOT = ".";
 	
-	/**
-	 * @parameter expression="${project.basedir}"
-	 * @required
-	 * @readonly
-	 */
+	@Parameter(property = "basedir", defaultValue = "${project.basedir}", required = true, readonly = true)
 	protected File basedir;
-	
-	/**
-	 * @parameter expression="${project.build.sourceDirectory}"
-	 * @required
-	 * @readonly
-	 */
+	@Parameter(property = "sourcedir", defaultValue = "${project.build.sourceDirectory}", required = true, readonly = true)
 	protected File sourcedir;
 	/**
 	 * @parameter expression="${project.build.testSourceDirectory}"
