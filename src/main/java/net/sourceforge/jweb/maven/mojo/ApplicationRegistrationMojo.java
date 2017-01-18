@@ -38,9 +38,9 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 	private String driver;
 	@Parameter(property = "url", required = true)
 	private String url;
-	@Parameter(property = "username", required = true)
+	@Parameter(property = "username", required = false, defaultValue="")
 	private String username;
-	@Parameter(property = "password", required = true)
+	@Parameter(property = "password", required = false, defaultValue="")
 	private String password;
 	@Parameter(property = "insert", required = false, defaultValue="insert into s_application (id,parent_id,application_key,application_name,description,href,icon_class,last_modify,sort_key) values (?,?,?,?,?,?,?,?,?)")
 	private String insert;
