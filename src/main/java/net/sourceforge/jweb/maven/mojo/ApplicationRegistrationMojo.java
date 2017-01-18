@@ -1,7 +1,11 @@
 package net.sourceforge.jweb.maven.mojo;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,12 +14,15 @@ import java.util.*;
 
 import net.sourceforge.jweb.annotation.Application;
 
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
@@ -32,7 +39,7 @@ import org.springframework.web.bind.annotation.*;
  * @author alex
  *
  */
-@Mojo(name = "register", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, threadSafe = true)
+@Mojo(name = "register", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, threadSafe = true, configurator="include-project-dependencies", requiresDependencyResolution=ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class ApplicationRegistrationMojo extends AbstractMojo {
 	@Parameter(property = "driver", required = true)
 	private String driver;
@@ -48,6 +55,8 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 	private String purge;
 	@Parameter(property = "packagePrefix", required = false, defaultValue="")
 	private String packagePrefix;
+	@Parameter(defaultValue = "${project}", required = true, readonly = true)
+	private MavenProject project;
 	/**
 	 * Properties for scan
 	 */
@@ -56,6 +65,36 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 	
 	@SuppressWarnings("unchecked")
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		//import classpath of project
+		try {
+		    Set<URL> urls = new HashSet<URL>();
+		    List<String> elements = project.getTestClasspathElements();
+		    for (String element : elements) {
+		        urls.add(new File(element).toURI().toURL());
+		    }
+		    
+		    project.getRuntimeClasspathElements();
+		    for (String element : elements) {
+		        urls.add(new File(element).toURI().toURL());
+		    }
+		    
+		    project.getCompileClasspathElements();
+		    for (String element : elements) {
+		        urls.add(new File(element).toURI().toURL());
+		    }
+
+		    ClassLoader contextClassLoader = URLClassLoader.newInstance(
+		            urls.toArray(new URL[0]),
+		            Thread.currentThread().getContextClassLoader());
+
+		    Thread.currentThread().setContextClassLoader(contextClassLoader);
+
+		} catch (DependencyResolutionRequiredException e) {
+		    throw new RuntimeException(e);
+		} catch (MalformedURLException e) {
+		    throw new RuntimeException(e);
+		}
+		
 		Connection connection=null;
 		try {
 			System.out.println("PWD"+password);
