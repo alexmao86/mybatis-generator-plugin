@@ -1,11 +1,7 @@
 package net.sourceforge.jweb.maven.mojo;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,7 +10,6 @@ import java.util.*;
 
 import net.sourceforge.jweb.annotation.Application;
 
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -66,7 +61,7 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 	@SuppressWarnings("unchecked")
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		//import classpath of project
-		try {
+		/*try {
 		    Set<URL> urls = new HashSet<URL>();
 		    List<String> elements = project.getTestClasspathElements();
 		    for (String element : elements) {
@@ -93,7 +88,7 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 		    throw new RuntimeException(e);
 		} catch (MalformedURLException e) {
 		    throw new RuntimeException(e);
-		}
+		}*/
 		
 		Connection connection=null;
 		try {
