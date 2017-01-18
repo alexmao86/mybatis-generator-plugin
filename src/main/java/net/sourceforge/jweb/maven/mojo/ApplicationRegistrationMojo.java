@@ -51,15 +51,21 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 	/**
 	 * Properties for scan
 	 */
-	@Parameter(property = "properties", required = true)
+	@Parameter(property = "properties", required = false)
 	private Properties properties;
 	
 	@SuppressWarnings("unchecked")
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		Connection connection=null;
 		try {
+			System.out.println("PWD"+password);
 			Class.forName(driver);
-			connection=DriverManager.getConnection(username, username, password);
+			if(username==null){
+				connection=DriverManager.getConnection(url);
+			}
+			else{
+				connection=DriverManager.getConnection(url, username, password==null?"":password);
+			}
 
 			PreparedStatement purgeSql=connection.prepareStatement(purge);
 			purgeSql.execute();
@@ -80,6 +86,9 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 			
 			//get all spring mvc annotated class
 			Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(Controller.class, false);
+			if(annotated.isEmpty()){
+				getLog().warn("no web method found, is there any configuration mistake?");
+			}
 			for(Class<?> clazz:annotated){
 				String baseUrl=getServletPath(clazz);
 				Set<Method> webMethods = ReflectionUtils.getAllMethods(
