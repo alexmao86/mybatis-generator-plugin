@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.*;
  * @author alex
  *
  */
-@Mojo(name = "register", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, threadSafe = true, configurator="include-project-dependencies", requiresDependencyResolution=ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Mojo(name = "register", defaultPhase = LifecyclePhase.INSTALL, threadSafe = true, configurator="include-project-dependencies", requiresDependencyResolution=ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class ApplicationRegistrationMojo extends AbstractMojo {
 	@Parameter(property = "driver", required = true)
 	private String driver;
@@ -52,6 +52,8 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 	private String packagePrefix;
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	private MavenProject project;
+	@Parameter(property = "${disabled}", required = false, readonly = true, defaultValue="false")
+	private boolean disabled;
 	/**
 	 * Properties for scan
 	 */
@@ -60,6 +62,11 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 	
 	@SuppressWarnings("unchecked")
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		if(disabled){
+			getLog().info("Plugin disabled, ignored");
+			return ;
+		}
+		System.out.println("\tThis plugin included all project dependencies, so it is probably to cause jar confliction. Please note this!");
 		//import classpath of project
 		/*try {
 		    Set<URL> urls = new HashSet<URL>();
@@ -134,8 +141,10 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 					String url = getServletPath(method);
 					if(url.isEmpty()) continue;
 					
-					getLog().info("Find web method: "+baseUrl+url);
-					
+					String finalUrl = baseUrl+(!baseUrl.endsWith("/")&&!url.startsWith("/")?"/":"")+url;
+                    
+                    getLog().info("Find web method: "+finalUrl);
+                    
 					Application app=method.getAnnotation(Application.class);
 					
 					if(app==null){
