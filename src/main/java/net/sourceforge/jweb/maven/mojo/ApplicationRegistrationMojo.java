@@ -99,7 +99,7 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 		
 		Connection connection=null;
 		try {
-			System.out.println("PWD"+password);
+			//System.out.println("PWD"+password);
 			Class.forName(driver);
 			if(username==null){
 				connection=DriverManager.getConnection(url);
