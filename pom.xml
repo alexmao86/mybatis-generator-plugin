@@ -83,6 +83,12 @@
 			<artifactId>mybatis-generator-maven-plugin</artifactId>
 			<version>1.3.2</version>
 			<scope>compile</scope>
+			<exclusions>
+                <exclusion>
+                    <groupId>com.google.code.google-collections</groupId>
+                    <artifactId>google-collect</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
 		<dependency>
