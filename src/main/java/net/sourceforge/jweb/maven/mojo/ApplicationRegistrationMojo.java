@@ -148,7 +148,7 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 					Application app=method.getAnnotation(Application.class);
 					
 					if(app==null){
-						getLog().error("no application config found, please add@Application to mapped method, ignored");
+						getLog().warn("no application config found, please add@Application to mapped method, ignored");
 						continue;
 					}
 
