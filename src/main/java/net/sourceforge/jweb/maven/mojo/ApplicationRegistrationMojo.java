@@ -97,6 +97,9 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 		    throw new RuntimeException(e);
 		}*/
 		
+		Set<String> uniqueKeys=new HashSet<String>();
+		Set<Integer> uniqueIds=new HashSet<Integer>();
+		
 		Connection connection=null;
 		try {
 			//System.out.println("PWD"+password);
@@ -152,6 +155,15 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 						continue;
 					}
 
+					if(uniqueKeys.contains(app.key())){
+						getLog().error("duplicated application key "+app.key()+" on "+clazz.getName()+"->"+method.getName());
+						continue;
+					}
+					if(uniqueIds.contains(app.id())){
+						getLog().error("duplicated application id "+app.id()+" on "+clazz.getName()+"->"+method.getName());
+						continue;
+					}
+					
 					insertSql.clearParameters();
 					int i=1;
 					insertSql.setInt(i++, app.id());
@@ -164,7 +176,13 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 					insertSql.setDate(i++, new java.sql.Date(System.currentTimeMillis()));
 					insertSql.setInt(i++, app.sort());
 					insertSql.execute();
+					
+					uniqueKeys.add(app.key());
+					uniqueIds.add(app.id());
 				}
+				
+				uniqueIds = null;
+				uniqueKeys = null;
 			}
 		} catch (ClassNotFoundException e) {
 			getLog().error(e.getMessage());
