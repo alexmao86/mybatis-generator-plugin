@@ -52,7 +52,7 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 	private String packagePrefix;
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	private MavenProject project;
-	@Parameter(property = "${disabled}", required = false, readonly = true, defaultValue="false")
+	@Parameter(property = "disabled", required = false, readonly = true, defaultValue="false")
 	private boolean disabled;
 	/**
 	 * Properties for scan
