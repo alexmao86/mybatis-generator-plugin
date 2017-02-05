@@ -39,7 +39,7 @@ public class PagePlugin extends RowBoundsPlugin {
 	private boolean useOldRowBounds=false;
 	
 	public boolean validate(List<String> warnings) {
-		System.out.println("\tＰａｇｅ　Plugin Ｕｓａｇｅ*******************************************");
+		System.out.println("\tPage　plugin usage*******************************************");
 		System.out.print("\tnet.sourceforge.jweb.mybatis.generator.plugins.PagePlugin");
 		System.out.println(" is replacement of org.mybatis.generator.plugins.RowBoundsPlugin");
 		System.out.println("\tPagePlugin changes client methods ");
