@@ -22,7 +22,7 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 			Object value=isf.get(fqt);
 			if(value!=null){
 				String strValue = value.toString();
-				isf.set(fqt, "${schema}."+strValue);
+				isf.set(fqt, "${schema}"+strValue);
 			}
 			
 			Field rsf=fqt.getClass().getDeclaredField("introspectedTableName");
@@ -30,7 +30,7 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 			value=rsf.get(fqt);
 			if(value!=null){
 				String strValue = value.toString();
-				rsf.set(fqt, "${schema}."+strValue);
+				rsf.set(fqt, "${schema}"+strValue);
 			}
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace();
@@ -49,4 +49,6 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 			introspectedTable.initialize();
 		}
 	}
+	
+	
 }
