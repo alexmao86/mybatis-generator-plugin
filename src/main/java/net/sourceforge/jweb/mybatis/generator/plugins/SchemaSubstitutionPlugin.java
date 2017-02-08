@@ -91,7 +91,7 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
         field.setType(FullyQualifiedJavaType.getStringInstance());
         field.setName("namespace");
         field.setInitializationString("\"\"");
-        field.addJavaDocLine("/**namespace used as schema indicator*/");
+        field.addJavaDocLine("/**namespace used as schema indicator by SchemaSubstitutionPlugin*/");
         topLevelClass.addField(field);
 
         //setter
