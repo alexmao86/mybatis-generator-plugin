@@ -12,6 +12,7 @@ import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.logging.Log;
 import org.mybatis.generator.logging.LogFactory;
 
@@ -68,6 +69,23 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 		if(!isPluginEnabled(introspectedTable)){
 			return true;
 		}
+		insertFieldWithAccessor(topLevelClass);
+        
+        return true;
+    }
+
+	
+	@Override
+	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		if(!isPluginEnabled(introspectedTable)){
+			return true;
+		}
+		insertFieldWithAccessor(topLevelClass);
+        
+        return true;
+	}
+
+	private void insertFieldWithAccessor(TopLevelClass topLevelClass) {
 		//add namespace attribute
 		Field field = new Field();
         field.setVisibility(JavaVisibility.PRIVATE);
@@ -92,10 +110,7 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
         method.setName("getNamespace");
         method.addBodyLine("return this.namespace;");
         topLevelClass.addMethod(method);
-        
-        return true;
-    }
-	
+	}
 	private boolean isPluginEnabled(final IntrospectedTable ist){
 		Properties properties=ist.getTableConfiguration().getProperties();
 		if(properties==null) return false;
