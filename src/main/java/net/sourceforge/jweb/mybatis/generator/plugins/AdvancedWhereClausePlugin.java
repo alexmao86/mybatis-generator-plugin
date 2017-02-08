@@ -144,7 +144,7 @@ public class AdvancedWhereClausePlugin extends PluginAdapter {
         field.setType(FullyQualifiedJavaType.getStringInstance());
         field.setName("criteriaLogical");
         field.setInitializationString("\"or\"");
-        field.addJavaDocLine("/**advaned where clause predicate logic, can be and or or. RESERVED!*/");
+        field.addJavaDocLine("/**advaned where clause predicate logic, can be and or or.*/");
         generatedCriteria.addField(field);
         /*
          public void setCriteriaLogical(String logic) {
