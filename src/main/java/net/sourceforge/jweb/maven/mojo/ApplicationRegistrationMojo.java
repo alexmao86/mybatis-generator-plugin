@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.*;
  * @author alex
  *
  */
-@Mojo(name = "register", defaultPhase = LifecyclePhase.INSTALL, threadSafe = true, configurator="include-project-dependencies", requiresDependencyResolution=ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Mojo(name = "register", defaultPhase = LifecyclePhase.INSTALL, threadSafe = true, configurator="include-project-dependencies", requiresDependencyResolution=ResolutionScope.COMPILE)
 public class ApplicationRegistrationMojo extends AbstractMojo {
 	@Parameter(property = "driver", required = true)
 	private String driver;
@@ -154,7 +154,8 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 						getLog().warn("no application config found, please add@Application to mapped method, ignored");
 						continue;
 					}
-
+					//getLog().info("uniqueKeys: "+uniqueKeys);
+					//getLog().info("Application annotation: "+app.key());
 					if(uniqueKeys.contains(app.key())){
 						getLog().error("duplicated application key "+app.key()+" on "+clazz.getName()+"->"+method.getName());
 						continue;
@@ -180,10 +181,10 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 					uniqueKeys.add(app.key());
 					uniqueIds.add(app.id());
 				}
-				
-				uniqueIds = null;
-				uniqueKeys = null;
 			}
+
+			uniqueIds = null;
+			uniqueKeys = null;
 		} catch (ClassNotFoundException e) {
 			getLog().error(e.getMessage());
 			e.printStackTrace();
