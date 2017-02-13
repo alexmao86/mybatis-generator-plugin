@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.*;
  * @author alex
  *
  */
-@Mojo(name = "register", defaultPhase = LifecyclePhase.INSTALL, threadSafe = true, configurator="include-project-dependencies", requiresDependencyResolution=ResolutionScope.COMPILE)
+@Mojo(name = "register", defaultPhase = LifecyclePhase.INSTALL, threadSafe = true, configurator="include-project-dependencies", requiresDependencyResolution=ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class ApplicationRegistrationMojo extends AbstractMojo {
 	@Parameter(property = "driver", required = true)
 	private String driver;
