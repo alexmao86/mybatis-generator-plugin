@@ -35,7 +35,7 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 			Object value=isf.get(fqt);
 			if(value!=null){
 				String strValue = value.toString();
-				isf.set(fqt, "${namespace}."+strValue);
+				isf.set(fqt, "${namespace}"+strValue);
 			}
 			
 			java.lang.reflect.Field rsf=fqt.getClass().getDeclaredField("introspectedTableName");
@@ -43,7 +43,7 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 			value=rsf.get(fqt);
 			if(value!=null){
 				String strValue = value.toString();
-				rsf.set(fqt, "${namespace}."+strValue);
+				rsf.set(fqt, "${namespace}"+strValue);
 			}
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace();
