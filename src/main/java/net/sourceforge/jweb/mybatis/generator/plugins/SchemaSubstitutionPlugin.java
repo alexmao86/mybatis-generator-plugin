@@ -8,10 +8,13 @@ import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.api.dom.xml.Attribute;
+import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.logging.Log;
 import org.mybatis.generator.logging.LogFactory;
 
@@ -63,6 +66,78 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 		}
 	}
 	
+	@Override
+	public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+		for(Parameter p:method.getParameters()){
+			p.getAnnotations().add("@Param(\""+p.getName()+"\")");
+		}
+		Parameter p=new Parameter(FullyQualifiedJavaType.getStringInstance(), "namespace");
+		p.addAnnotation("@Param(\"namespace\")");
+		method.addParameter(p);
+		return true;
+	}
+
+	@Override
+	public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		for(Parameter p:method.getParameters()){
+			p.getAnnotations().add("@Param(\""+p.getName()+"\")");
+		}
+		Parameter p=new Parameter(FullyQualifiedJavaType.getStringInstance(), "namespace");
+		p.addAnnotation("@Param(\"namespace\")");
+		method.addParameter(p);
+		return true;
+	}
+
+	@Override
+	public boolean sqlMapDeleteByPrimaryKeyElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+		List<Attribute> attrs=element.getAttributes();
+		for(int i=0;i<attrs.size();i++){
+			Attribute attr=attrs.get(i);
+			if("parameterType".equals(attr.getName())){
+				attrs.remove(i);
+				break;
+			}
+		}
+		element.addAttribute(new Attribute("parameterType", "map"));
+		return true;
+	}
+
+	@Override
+	public boolean sqlMapSelectByPrimaryKeyElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+		List<Attribute> attrs=element.getAttributes();
+		for(int i=0;i<attrs.size();i++){
+			Attribute attr=attrs.get(i);
+			if("parameterType".equals(attr.getName())){
+				attrs.remove(i);
+				break;
+			}
+		}
+		element.addAttribute(new Attribute("parameterType", "map"));
+		return true;
+	}
+
+	@Override
+	public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+		for(Parameter p:method.getParameters()){
+			p.getAnnotations().add("@Param(\""+p.getName()+"\")");
+		}
+		Parameter p=new Parameter(FullyQualifiedJavaType.getStringInstance(), "namespace");
+		p.addAnnotation("@Param(\"namespace\")");
+		method.addParameter(p);
+		return true;
+	}
+
+	@Override
+	public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		for(Parameter p:method.getParameters()){
+			p.getAnnotations().add("@Param(\""+p.getName()+"\")");
+		}
+		Parameter p=new Parameter(FullyQualifiedJavaType.getStringInstance(), "namespace");
+		p.addAnnotation("@Param(\"namespace\")");
+		method.addParameter(p);
+		return true;
+	}
+
 	@Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 		if(!isPluginEnabled(introspectedTable)){
