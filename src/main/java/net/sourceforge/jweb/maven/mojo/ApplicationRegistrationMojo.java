@@ -172,7 +172,7 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 					insertSql.setString(i++, app.key());
 					insertSql.setString(i++, app.name());
 					insertSql.setString(i++, app.desc());
-					insertSql.setString(i++, baseUrl+url);
+					insertSql.setString(i++, finalUrl);
 					insertSql.setString(i++, app.icon());
 					insertSql.setDate(i++, new java.sql.Date(System.currentTimeMillis()));
 					insertSql.setInt(i++, app.sort());
