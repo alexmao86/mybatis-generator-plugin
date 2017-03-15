@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import net.sourceforge.jweb.annotation.Application;
+import net.sourceforge.jweb.annotation.ApplicationGroup;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -38,20 +39,28 @@ import org.springframework.web.bind.annotation.*;
 public class ApplicationRegistrationMojo extends AbstractMojo {
 	@Parameter(property = "driver", required = true)
 	private String driver;
+	
 	@Parameter(property = "url", required = true)
 	private String url;
+	
 	@Parameter(property = "username", required = false, defaultValue="")
 	private String username;
+	
 	@Parameter(property = "password", required = false, defaultValue="")
 	private String password;
-	@Parameter(property = "insert", required = false, defaultValue="insert into s_application (id,parent_id,application_key,application_name,description,href,icon_class,last_modify,sort_key) values (?,?,?,?,?,?,?,?,?)")
+	
+	@Parameter(property = "insert", required = false, defaultValue="insert into s_application (id,parent_id,application_key,application_name,category_name,description,href,icon_class,last_modify,sort_key) values (?,?,?,?,?,?,?,?,?,?)")
 	private String insert;
+	
 	@Parameter(property = "purge", required = false, defaultValue="delete from s_application")
 	private String purge;
+	
 	@Parameter(property = "packagePrefix", required = false, defaultValue="")
 	private String packagePrefix;
+	
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	private MavenProject project;
+	
 	@Parameter(property = "disabled", required = false, readonly = true, defaultValue="false")
 	private boolean disabled;
 	/**
@@ -133,12 +142,22 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 			if(annotated.isEmpty()){
 				getLog().warn("no web method found, is there any configuration mistake?");
 			}
+			
 			for(Class<?> clazz:annotated){
 				String baseUrl=getServletPath(clazz);
 				Set<Method> webMethods = ReflectionUtils.getAllMethods(
 						clazz,
 						ReflectionUtils.withModifier(Modifier.PUBLIC)
 				);
+				//存 app group
+				ApplicationGroup groupApp=clazz.getAnnotation(ApplicationGroup.class);
+				Integer groupId=null;
+				String groupName=null;
+				
+				if(groupApp!=null){
+					groupId = groupApp.id();
+					groupName = groupApp.name();
+				}
 				
 				for(Method method:webMethods){
 					String url = getServletPath(method);
@@ -167,10 +186,14 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 					
 					insertSql.clearParameters();
 					int i=1;
-					insertSql.setInt(i++, app.id());
-					insertSql.setInt(i++, app.parentId());
+					insertSql.setInt(i++, groupId==null?app.id():(Integer.parseInt(""+groupId+app.id())));
+					insertSql.setInt(i++, groupId==null?app.parentId():(app.parentId()==-1?groupId:app.parentId()));
 					insertSql.setString(i++, app.key());
 					insertSql.setString(i++, app.name());
+					
+					if(groupName==null) insertSql.setNull(i++,  java.sql.Types.NVARCHAR);
+					else insertSql.setString(i++, groupName);
+					
 					insertSql.setString(i++, app.desc());
 					insertSql.setString(i++, finalUrl);
 					insertSql.setString(i++, app.icon());
