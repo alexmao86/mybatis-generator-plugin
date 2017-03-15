@@ -173,22 +173,38 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 						getLog().warn("no application config found, please add@Application to mapped method, ignored");
 						continue;
 					}
+					int appId = app.id();
+					if(groupId!=null){
+						appId = Integer.parseInt(""+groupId+app.id());
+					}
+					
+					int parentId = app.parentId();
+					if(groupId!=null&&app.parentId()==-1){
+						parentId = groupId;
+					}
+					
+					String key = app.key();
+					
+					if(groupApp!=null){
+						key = groupApp.key()+"_"+app.key();
+					}
+					
 					//getLog().info("uniqueKeys: "+uniqueKeys);
 					//getLog().info("Application annotation: "+app.key());
-					if(uniqueKeys.contains(app.key())){
+					if(uniqueKeys.contains(key)){
 						getLog().error("duplicated application key "+app.key()+" on "+clazz.getName()+"->"+method.getName());
 						continue;
 					}
-					if(uniqueIds.contains(app.id())){
+					if(uniqueIds.contains(appId)){
 						getLog().error("duplicated application id "+app.id()+" on "+clazz.getName()+"->"+method.getName());
 						continue;
 					}
 					
 					insertSql.clearParameters();
 					int i=1;
-					insertSql.setInt(i++, groupId==null?app.id():(Integer.parseInt(""+groupId+app.id())));
-					insertSql.setInt(i++, groupId==null?app.parentId():(app.parentId()==-1?groupId:app.parentId()));
-					insertSql.setString(i++, app.key());
+					insertSql.setInt(i++, appId);
+					insertSql.setInt(i++, parentId);
+					insertSql.setString(i++, key);
 					insertSql.setString(i++, app.name());
 					
 					if(groupName==null) insertSql.setNull(i++,  java.sql.Types.NVARCHAR);
@@ -201,8 +217,8 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 					insertSql.setInt(i++, app.sort());
 					insertSql.execute();
 					
-					uniqueKeys.add(app.key());
-					uniqueIds.add(app.id());
+					uniqueKeys.add(key);
+					uniqueIds.add(appId);
 				}
 			}
 
