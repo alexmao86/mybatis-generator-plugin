@@ -49,7 +49,7 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 	@Parameter(property = "password", required = false, defaultValue="")
 	private String password;
 	
-	@Parameter(property = "insert", required = false, defaultValue="insert into s_application (id,parent_id,application_key,application_name,category_name,description,href,icon_class,last_modify,sort_key) values (?,?,?,?,?,?,?,?,?,?)")
+	@Parameter(property = "insert", required = false, defaultValue="insert into s_application (id,parent_id,application_key,application_name,category_name,is_html_page,description,href,icon_class,last_modify,sort_key) values (?,?,?,?,?,?,?,?,?,?,?)")
 	private String insert;
 	
 	@Parameter(property = "purge", required = false, defaultValue="delete from s_application")
@@ -209,6 +209,8 @@ public class ApplicationRegistrationMojo extends AbstractMojo {
 					
 					if(groupName==null) insertSql.setNull(i++,  java.sql.Types.NVARCHAR);
 					else insertSql.setString(i++, groupName);
+					
+					insertSql.setString(i++, method.getAnnotation(ResponseBody.class)==null?"Y":"N");
 					
 					insertSql.setString(i++, app.desc());
 					insertSql.setString(i++, finalUrl);
