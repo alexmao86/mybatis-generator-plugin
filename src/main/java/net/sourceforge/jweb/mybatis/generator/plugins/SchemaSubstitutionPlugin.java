@@ -30,7 +30,7 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 		if(!isPluginEnabled(introspectedTable)){
 			return ;
 		}
-		
+		//通过反射修改掉runtimeTableName的名字　加上${namespace}前缀
 		final FullyQualifiedTable fqt = introspectedTable.getFullyQualifiedTable();
 		try {
 			java.lang.reflect.Field isf=fqt.getClass().getDeclaredField("runtimeTableName");
@@ -65,7 +65,7 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 			introspectedTable.initialize();
 		}
 	}
-	
+	//给方法签名增加参数和ａｎｎｏｔａｔｉｏｎ
 	@Override
 	public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
 		for(Parameter p:method.getParameters()){
@@ -76,7 +76,7 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 		method.addParameter(p);
 		return true;
 	}
-
+	//给方法签名增加参数和ａｎｎｏｔａｔｉｏｎ
 	@Override
 	public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 		for(Parameter p:method.getParameters()){
@@ -88,6 +88,7 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 		return true;
 	}
 
+	//修改parameterType从具体的ｐｏｊｏ变为map
 	@Override
 	public boolean sqlMapDeleteByPrimaryKeyElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
 		List<Attribute> attrs=element.getAttributes();
@@ -101,7 +102,7 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 		element.addAttribute(new Attribute("parameterType", "map"));
 		return true;
 	}
-
+	//修改parameterType从具体的ｐｏｊｏ变为map
 	@Override
 	public boolean sqlMapSelectByPrimaryKeyElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
 		List<Attribute> attrs=element.getAttributes();
@@ -115,7 +116,7 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 		element.addAttribute(new Attribute("parameterType", "map"));
 		return true;
 	}
-
+	//增加参数
 	@Override
 	public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
 		for(Parameter p:method.getParameters()){
@@ -126,12 +127,66 @@ public class SchemaSubstitutionPlugin  extends PluginAdapter {
 		method.addParameter(p);
 		return true;
 	}
-
+	//增加参数
 	@Override
 	public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-		for(Parameter p:method.getParameters()){
-			p.getAnnotations().add("@Param(\""+p.getName()+"\")");
-		}
+		Parameter p=new Parameter(FullyQualifiedJavaType.getStringInstance(), "namespace");
+		p.addAnnotation("@Param(\"namespace\")");
+		method.addParameter(p);
+		return true;
+	}
+	
+
+	@Override
+	public boolean clientUpdateByExampleSelectiveMethodGenerated(Method method,
+			Interface interfaze, IntrospectedTable introspectedTable) {
+		Parameter p=new Parameter(FullyQualifiedJavaType.getStringInstance(), "namespace");
+		p.addAnnotation("@Param(\"namespace\")");
+		method.addParameter(p);
+		return true;
+	}
+
+	@Override
+	public boolean clientUpdateByExampleSelectiveMethodGenerated(Method method,
+			TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		Parameter p=new Parameter(FullyQualifiedJavaType.getStringInstance(), "namespace");
+		p.addAnnotation("@Param(\"namespace\")");
+		method.addParameter(p);
+		return true;
+	}
+
+	@Override
+	public boolean clientUpdateByExampleWithBLOBsMethodGenerated(Method method,
+			Interface interfaze, IntrospectedTable introspectedTable) {
+		Parameter p=new Parameter(FullyQualifiedJavaType.getStringInstance(), "namespace");
+		p.addAnnotation("@Param(\"namespace\")");
+		method.addParameter(p);
+		return true;
+	}
+
+	@Override
+	public boolean clientUpdateByExampleWithBLOBsMethodGenerated(Method method,
+			TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		Parameter p=new Parameter(FullyQualifiedJavaType.getStringInstance(), "namespace");
+		p.addAnnotation("@Param(\"namespace\")");
+		method.addParameter(p);
+		return true;
+	}
+
+	@Override
+	public boolean clientUpdateByExampleWithoutBLOBsMethodGenerated(
+			Method method, Interface interfaze,
+			IntrospectedTable introspectedTable) {
+		Parameter p=new Parameter(FullyQualifiedJavaType.getStringInstance(), "namespace");
+		p.addAnnotation("@Param(\"namespace\")");
+		method.addParameter(p);
+		return true;
+	}
+
+	@Override
+	public boolean clientUpdateByExampleWithoutBLOBsMethodGenerated(
+			Method method, TopLevelClass topLevelClass,
+			IntrospectedTable introspectedTable) {
 		Parameter p=new Parameter(FullyQualifiedJavaType.getStringInstance(), "namespace");
 		p.addAnnotation("@Param(\"namespace\")");
 		method.addParameter(p);
