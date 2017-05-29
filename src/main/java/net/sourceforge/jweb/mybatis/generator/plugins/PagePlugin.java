@@ -78,7 +78,7 @@ public class PagePlugin extends RowBoundsPlugin {
 		}
 		else {
 			if (introspectedTable.getTargetRuntime() == IntrospectedTable.TargetRuntime.MYBATIS3) {
-				copyAndAddMethod(method, interfaze);
+				copyAndAddMethod(method, interfaze, introspectedTable);
 			}
 		}
 		return true;
@@ -93,14 +93,16 @@ public class PagePlugin extends RowBoundsPlugin {
 		}
 		else {
 			if (introspectedTable.getTargetRuntime() == IntrospectedTable.TargetRuntime.MYBATIS3) {
-				copyAndAddMethod(method, interfaze);
+				copyAndAddMethod(method, interfaze, introspectedTable);
 			}
 		}
 		return true;
 	}
 
-	private void copyAndAddMethod(Method method, Interface interfaze) {
+	private void copyAndAddMethod(Method method, Interface interfaze, final IntrospectedTable introspectedTable) {
+		final String domainName=introspectedTable.getTableConfiguration().getDomainObjectName();
 		Method newMethod = new Method(method){
+			/*
 			public void addFormattedAnnotations(StringBuilder sb, int indentLevel){
 				super.addFormattedAnnotations(sb, indentLevel);
 				OutputUtilities.javaIndent(sb, indentLevel);
@@ -111,6 +113,7 @@ public class PagePlugin extends RowBoundsPlugin {
 				String content = super.getFormattedContent(indentLevel, interfaceMethod);
 				return content.replaceAll("__S__T__E__\\s+", "<T> ");
 			}
+			*/
 		};
 		newMethod.setName(method.getName() + "WithRowbounds");
 		newMethod.addParameter(new Parameter(this.pageBound, "rowBounds"){
@@ -120,7 +123,7 @@ public class PagePlugin extends RowBoundsPlugin {
 			      sb.append(annotation);
 			      sb.append(' ');
 			    }
-			    sb.append(getType().getShortName()).append("<T>");//add generic
+			    sb.append(getType().getShortName()).append("<").append(domainName).append(">");//add generic
 			    if (this.isVarargs()) {
 			      sb.append("...");
 			    }
