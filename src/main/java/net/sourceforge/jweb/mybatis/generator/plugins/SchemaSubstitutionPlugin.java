@@ -17,7 +17,11 @@ import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.logging.Log;
 import org.mybatis.generator.logging.LogFactory;
-
+/**
+ * //通过反射修改掉runtimeTableName的名字　加上${namespace}前缀
+ * @author maoanapex88@163.com
+ *
+ */
 public class SchemaSubstitutionPlugin  extends PluginAdapter {
 	private final static Log LOG=LogFactory.getLog(SchemaSubstitutionPlugin.class);
 	private static final String RECUR_MARK = "__SchemaSubstitutionPlugin__recur__mark__";
