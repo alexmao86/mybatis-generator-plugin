@@ -46,7 +46,8 @@ public class IncludeProjectDependenciesComponentConfigurator extends AbstractCom
                                         expressionEvaluator, listener );
     }
 
-    private void addProjectDependenciesToClassRealm(ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm) throws ComponentConfigurationException {
+    @SuppressWarnings("unchecked")
+	private void addProjectDependenciesToClassRealm(ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm) throws ComponentConfigurationException {
         List<String> runtimeClasspathElements;
         try {
             //noinspection unchecked

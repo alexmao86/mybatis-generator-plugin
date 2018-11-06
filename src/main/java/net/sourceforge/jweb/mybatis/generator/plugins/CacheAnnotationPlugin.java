@@ -101,7 +101,7 @@ public class CacheAnnotationPlugin extends PluginAdapter {
 
             this.items = new ArrayList<CacheConfigItem>();
 
-            Enumeration e = props.propertyNames();
+            Enumeration<?> e = props.propertyNames();
             while (e.hasMoreElements()) {
                 String key = (String) e.nextElement();
                 items.add(CacheConfigItem.valueOf(key, props.getProperty(key)));
