@@ -107,3 +107,8 @@ net.sourceforge.jweb.mybatis.generator.plugins.ModelBuilderPlugin
   &lt;version&gt;1.0&lt;/version&gt;
 &lt;/dependency&gt;
 </pre>
+
+## update
+### 1.0.7
+remove warnings
+enhance PagePlugin to add method parameter type argument with domain type 
