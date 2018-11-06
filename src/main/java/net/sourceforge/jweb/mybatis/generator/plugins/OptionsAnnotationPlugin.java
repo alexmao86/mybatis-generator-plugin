@@ -113,7 +113,7 @@ public class OptionsAnnotationPlugin extends PluginAdapter {
 
             this.items = new ArrayList<OptionsConfigItem>();
 
-            Enumeration e = props.propertyNames();
+            Enumeration<?> e = props.propertyNames();
             while (e.hasMoreElements()) {
                 String key = (String) e.nextElement();
                 items.add(OptionsConfigItem.valueOf(key, props.getProperty(key)));

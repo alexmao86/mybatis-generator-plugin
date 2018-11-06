@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.Method;
@@ -18,6 +17,7 @@ import org.mybatis.generator.plugins.RowBoundsPlugin;
  * holding paging information.
  * 
  * Usage:
+ * 
  * <pre>
  * &lt;plugin type="net.sourceforge.jweb.mybatis.generator.plugins.PagePlugin"&gt;
  * &lt;property name="useRowBounds" value="true/false"/&gt;&lt;--true to use old org.mybatis.generator.plugins.RowBoundsPlugin --&gt;
@@ -31,22 +31,25 @@ import org.mybatis.generator.plugins.RowBoundsPlugin;
  * &lt;property name="PagePluginUseRowBounds" value="true/false"/&gt;
  * &lt;/table&gt;
  * </pre>
+ * 
  * @author maoanapex88@163.com
  *
  */
 public class PagePlugin extends RowBoundsPlugin {
 	private FullyQualifiedJavaType pageBound;
-	private boolean useOldRowBounds=false;
-	
+	private boolean useOldRowBounds = false;
+
 	public boolean validate(List<String> warnings) {
 		System.out.println("\tPage　plugin usage*******************************************");
 		System.out.print("\tnet.sourceforge.jweb.mybatis.generator.plugins.PagePlugin");
 		System.out.println(" is replacement of org.mybatis.generator.plugins.RowBoundsPlugin");
 		System.out.println("\tPagePlugin changes client methods ");
-		System.out.println("\tList<Domain> selectByExampleWithBLOBsWithRowbounds(DomainExample example, RowBounds rowBounds);");
+		System.out.println(
+				"\tList<Domain> selectByExampleWithBLOBsWithRowbounds(DomainExample example, RowBounds rowBounds);");
 		System.out.println("\tList<Domain> selectByExampleWithRowbounds(DomainExample example, RowBounds rowBounds);");
 		System.out.println("\tto");
-		System.out.println("\tList<Domain> selectByExampleWithBLOBsWithRowbounds(DomainExample example, Page rowBounds);");
+		System.out.println(
+				"\tList<Domain> selectByExampleWithBLOBsWithRowbounds(DomainExample example, Page rowBounds);");
 		System.out.println("\tList<Domain> selectByExampleWithRowbounds(DomainExample example, Page rowBounds);");
 		System.out.println("\tPage class is in below maven artifact");
 		System.out.println("\t  <!-- https://mvnrepository.com/artifact/com.github.alexmao86/jweb-common -->");
@@ -56,27 +59,27 @@ public class PagePlugin extends RowBoundsPlugin {
 		System.out.println("\t	    <version>???</version>");
 		System.out.println("\t	</dependency>");
 
-		Properties properties=this.getProperties();
-		if(properties!=null){
-			String value=properties.getProperty("useRowBounds");
+		Properties properties = this.getProperties();
+		if (properties != null) {
+			String value = properties.getProperty("useRowBounds");
 			useOldRowBounds = "true".equalsIgnoreCase(value);
 		}
 		return super.validate(warnings);
 	}
-	
+
 	public PagePlugin() {
 		super();
 		this.pageBound = new FullyQualifiedJavaType("net.sourceforge.orm.mybatis.Page");
 	}
 
 	@Override
-	public boolean clientSelectByExampleWithBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
-		Properties properties=introspectedTable.getTableConfiguration().getProperties();
+	public boolean clientSelectByExampleWithBLOBsMethodGenerated(Method method, Interface interfaze,
+			IntrospectedTable introspectedTable) {
+		Properties properties = introspectedTable.getTableConfiguration().getProperties();
 		boolean useOldRowBoundsTableLevel = "true".equalsIgnoreCase(properties.getProperty("PagePluginUseRowBounds"));
-		if(useOldRowBounds||useOldRowBoundsTableLevel){
+		if (useOldRowBounds || useOldRowBoundsTableLevel) {
 			return super.clientSelectByExampleWithBLOBsMethodGenerated(method, interfaze, introspectedTable);
-		}
-		else {
+		} else {
 			if (introspectedTable.getTargetRuntime() == IntrospectedTable.TargetRuntime.MYBATIS3) {
 				copyAndAddMethod(method, interfaze, introspectedTable);
 			}
@@ -85,13 +88,13 @@ public class PagePlugin extends RowBoundsPlugin {
 	}
 
 	@Override
-	public boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
-		Properties properties=introspectedTable.getTableConfiguration().getProperties();
+	public boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze,
+			IntrospectedTable introspectedTable) {
+		Properties properties = introspectedTable.getTableConfiguration().getProperties();
 		boolean useOldRowBoundsTableLevel = "true".equalsIgnoreCase(properties.getProperty("PagePluginUseRowBounds"));
-		if(useOldRowBounds||useOldRowBoundsTableLevel){
+		if (useOldRowBounds || useOldRowBoundsTableLevel) {
 			return super.clientSelectByExampleWithoutBLOBsMethodGenerated(method, interfaze, introspectedTable);
-		}
-		else {
+		} else {
 			if (introspectedTable.getTargetRuntime() == IntrospectedTable.TargetRuntime.MYBATIS3) {
 				copyAndAddMethod(method, interfaze, introspectedTable);
 			}
@@ -100,40 +103,31 @@ public class PagePlugin extends RowBoundsPlugin {
 	}
 
 	private void copyAndAddMethod(Method method, Interface interfaze, final IntrospectedTable introspectedTable) {
-		final String domainName=introspectedTable.getTableConfiguration().getDomainObjectName();
-		Method newMethod = new Method(method){
-			/*
-			public void addFormattedAnnotations(StringBuilder sb, int indentLevel){
-				super.addFormattedAnnotations(sb, indentLevel);
-				OutputUtilities.javaIndent(sb, indentLevel);
-				sb.append("__S__T__E__");//to make code formatted well, here add one dummy mark here, then remove improper indent
-			}
-			//remove improper indent, replace it with generic declaration
-			public String getFormattedContent(int indentLevel, boolean interfaceMethod) {
-				String content = super.getFormattedContent(indentLevel, interfaceMethod);
-				return content.replaceAll("__S__T__E__\\s+", "<T> ");
-			}
-			*/
-		};
+//		final String domainName = introspectedTable.getTableConfiguration().getDomainObjectName();
+		final String domainFullName = introspectedTable.getBaseRecordType();
+		final FullyQualifiedJavaType domainType = new FullyQualifiedJavaType(domainFullName);
+		final Method newMethod = new Method(method);
 		newMethod.setName(method.getName() + "WithRowbounds");
-		newMethod.addParameter(new Parameter(this.pageBound, "rowBounds"){
+		FullyQualifiedJavaType parameterType = new FullyQualifiedJavaType(this.pageBound.getFullyQualifiedName());
+		parameterType.addTypeArgument(domainType);
+		newMethod.addParameter(new Parameter(parameterType, "rowBounds")/* {
 			public String getFormattedContent() {
 				StringBuilder sb = new StringBuilder();
-			    for (String annotation : getAnnotations()){
-			      sb.append(annotation);
-			      sb.append(' ');
-			    }
-			    sb.append(getType().getShortName()).append("<").append(domainName).append(">");//add generic
-			    if (this.isVarargs()) {
-			      sb.append("...");
-			    }
-			    sb.append(' ');
-			    sb.append(getName());
-			    
-			    return sb.toString();
+				for (String annotation : getAnnotations()) {
+					sb.append(annotation);
+					sb.append(' ');
+				}
+				sb.append(getType().getShortName()).append("<").append(domainName).append(">");// add generic
+				if (this.isVarargs()) {
+					sb.append("...");
+				}
+				sb.append(' ');
+				sb.append(getName());
+				return sb.toString();
 			}
-		});
+		}*/);
 		interfaze.addMethod(newMethod);
 		interfaze.addImportedType(this.pageBound);
+		interfaze.addImportedType(domainType);
 	}
 }
