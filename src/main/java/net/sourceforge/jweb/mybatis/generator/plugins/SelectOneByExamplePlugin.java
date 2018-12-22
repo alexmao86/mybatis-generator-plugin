@@ -69,7 +69,6 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
-    	//�ڲ���XML��ʱ������ibatis2��mybatis3ʵ�ֲ�ͬ���������Dom���Ƶ��취���
     	String xmlStr=document.getFormattedContent();
     	StringReader reader=new StringReader(xmlStr);
     	try {
@@ -151,9 +150,6 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
         }
         return true;
     }
-    /*
-     * ��.java�ļ������SelectOneByExample��SelectOneByExampleWithBLOBs
-     */
     private Method generateSelectOneByExample(Method method, IntrospectedTable introspectedTable, boolean withBLOBs) {
         Method m = new Method(config.methodToGenerate+(withBLOBs?"WithBLOBs":""));
         m.setVisibility(method.getVisibility());
