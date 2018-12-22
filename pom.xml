@@ -25,6 +25,12 @@
 			<organization>Personal</organization>
 			<organizationUrl>http://www.nowcode.cn</organizationUrl>
 		</developer>
+		<developer>
+			<name>Dailey Dai</name>
+			<email>dailey.dai@icloud.com</email>
+			<organization>Personal</organization>
+			<organizationUrl>http://www.nowcode.cn</organizationUrl>
+		</developer>
 	</developers>
 	<scm>
 		<connection>scm:git:git://github.com/alexmao86/mybatis-generator-plugin.git</connection>
