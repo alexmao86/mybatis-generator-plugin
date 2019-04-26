@@ -6,14 +6,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.codehaus.classworlds.*;
-import org.codehaus.plexus.component.configurator.*;
+import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.plexus.component.configurator.AbstractComponentConfigurator;
+import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
 import org.codehaus.plexus.component.configurator.converters.special.ClassRealmConverter;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A custom ComponentConfigurator which adds the project's runtime classpath elements
@@ -29,7 +32,7 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
  */
 public class IncludeProjectDependenciesComponentConfigurator extends AbstractComponentConfigurator { 
 
-    private static final Logger LOGGER = Logger.getLogger(IncludeProjectDependenciesComponentConfigurator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IncludeProjectDependenciesComponentConfigurator.class);
 
     public void configureComponent( Object component, PlexusConfiguration configuration,
                                     ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
