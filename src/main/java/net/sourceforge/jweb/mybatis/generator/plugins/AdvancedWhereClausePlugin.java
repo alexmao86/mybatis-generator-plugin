@@ -60,7 +60,11 @@ import org.mybatis.generator.logging.LogFactory;
  * YourDomainExample e=new YourDomainExample();
  * e.createCriteria().andXXXX().orYYYY()....
  * </pre>
- * 
+ * Configuration:
+ * <table border="1">
+ * 	<tr><td>Key</td><td>Value</td></tr>
+ * 	<tr><td>AdvancedWhereClausePluginEnabled</td><td>true/false</td></tr>
+ * </table>
  * 
  * @author maoanapex88@163.com
  */

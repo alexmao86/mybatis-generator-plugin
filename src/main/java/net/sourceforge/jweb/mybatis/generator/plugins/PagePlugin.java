@@ -103,29 +103,13 @@ public class PagePlugin extends RowBoundsPlugin {
 	}
 
 	private void copyAndAddMethod(Method method, Interface interfaze, final IntrospectedTable introspectedTable) {
-//		final String domainName = introspectedTable.getTableConfiguration().getDomainObjectName();
 		final String domainFullName = introspectedTable.getBaseRecordType();
 		final FullyQualifiedJavaType domainType = new FullyQualifiedJavaType(domainFullName);
 		final Method newMethod = new Method(method);
 		newMethod.setName(method.getName() + "WithRowbounds");
 		FullyQualifiedJavaType parameterType = new FullyQualifiedJavaType(this.pageBound.getFullyQualifiedName());
 		parameterType.addTypeArgument(domainType);
-		newMethod.addParameter(new Parameter(parameterType, "rowBounds")/* {
-			public String getFormattedContent() {
-				StringBuilder sb = new StringBuilder();
-				for (String annotation : getAnnotations()) {
-					sb.append(annotation);
-					sb.append(' ');
-				}
-				sb.append(getType().getShortName()).append("<").append(domainName).append(">");// add generic
-				if (this.isVarargs()) {
-					sb.append("...");
-				}
-				sb.append(' ');
-				sb.append(getName());
-				return sb.toString();
-			}
-		}*/);
+		newMethod.addParameter(new Parameter(parameterType, "rowBounds"));
 		interfaze.addMethod(newMethod);
 		interfaze.addImportedType(this.pageBound);
 		interfaze.addImportedType(domainType);

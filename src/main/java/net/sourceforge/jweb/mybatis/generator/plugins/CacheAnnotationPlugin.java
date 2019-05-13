@@ -27,7 +27,7 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 
 /**
- * Provides caching support to the mybatis generator by adding @CacheNamespace annotation to the generated mapper
+ * Provides caching support to the mybatis generator by adding @CacheNamespace annotation to the generated mapper(Dao)
  * interface.<br>
  * <p/>
  * Example configuration:<br/>

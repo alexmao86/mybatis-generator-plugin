@@ -20,10 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
@@ -43,14 +39,6 @@ import org.w3c.dom.Text;
  *
  */
 public class PluginUtil {
-	static {
-		ConsoleAppender console = new ConsoleAppender();
-		String PATTERN = "%d %m%n";
-		console.setLayout(new PatternLayout(PATTERN));
-		console.setThreshold(Level.DEBUG);
-		console.activateOptions();
-		Logger.getRootLogger().addAppender(console);
-	}
 	private PluginUtil(){
 		
 	}
