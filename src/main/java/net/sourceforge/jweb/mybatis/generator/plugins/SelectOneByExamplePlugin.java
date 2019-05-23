@@ -1,4 +1,28 @@
 package net.sourceforge.jweb.mybatis.generator.plugins;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+
+import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.PluginAdapter;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.Interface;
+import org.mybatis.generator.api.dom.java.JavaVisibility;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
+import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.api.dom.xml.Document;
+import org.mybatis.generator.api.dom.xml.TextElement;
+import org.mybatis.generator.logging.Log;
+import org.mybatis.generator.logging.LogFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 /*
  * Copyright 2002-2016 the original author or authors.
  *
@@ -15,24 +39,6 @@ package net.sourceforge.jweb.mybatis.generator.plugins;
  * limitations under the License.
  */
 import net.sourceforge.jweb.maven.util.XMLUtil;
-
-import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.java.*;
-import org.mybatis.generator.api.dom.xml.Document;
-import org.mybatis.generator.api.dom.xml.TextElement;
-import org.mybatis.generator.logging.Log;
-import org.mybatis.generator.logging.LogFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import java.io.StringReader;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 
 /**
  * Adds "selectOneByExample" method to the appropriate Mapper interface returning exactly one object instance.<br/>
@@ -52,6 +58,8 @@ import javax.xml.xpath.XPathExpression;
  * <br/> Properties:<br/> <ul> <li><strong>methodToGenerate</strong> (optional) : the name of the method to generate.
  * Default: <strong>selectOneByExample</strong></li> <li><strong>excludeClassNamesRegexp</strong> (optional): classes to
  * exclude from generation as regular expression. Default: none</li> </ul>
+ * 
+ * 2019-05-23 enhance selectOne for JDK8, added selectOneSafely();
  */
 public class SelectOneByExamplePlugin extends PluginAdapter {
 	private final static Log LOG=LogFactory.getLog(SelectOneByExamplePlugin.class);
@@ -66,8 +74,71 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
         }
         return true;
     }
-
+    
     @Override
+	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		if(config.supportJDK8) {
+			interfaze.addImportedType(new FullyQualifiedJavaType("org.slf4j.LoggerFactory"));
+			List<Method> appendMethods=new ArrayList<Method>(2);
+			for(Method method : interfaze.getMethods()) {
+				if(method.getName().equals(config.methodToGenerate)) {
+					Method newMethod=new Method();
+					newMethod.setName(config.methodToGenerate+"Safely");
+					newMethod.setVisibility(JavaVisibility.PUBLIC);
+					newMethod.setReturnType(new FullyQualifiedJavaType(method.getReturnType().getFullyQualifiedName()) {
+						@Override
+						public String getShortName() {
+							return "default "+super.getShortName().replaceFirst("WithBLOBs", "");
+						}
+					});
+					for(Parameter param:method.getParameters()) {
+						newMethod.addParameter(param);
+					}
+					
+					String line1="List<%s> list=this.selectByExample(%s);";
+					String line2="if(list.isEmpty()) return null;";
+					String line3="if(list.size()>1) {LoggerFactory.getLogger(%s.class).info(\"select one retured multiple rows\");}";
+					String line4="return list.get(0);";
+					newMethod.addBodyLine(String.format(line1, method.getReturnType().getShortName().replaceFirst("WithBLOBs", ""), method.getParameters().get(0).getName()) );
+					newMethod.addBodyLine(line2);
+					newMethod.addBodyLine(String.format(line3, interfaze.getType().getShortName()));
+					newMethod.addBodyLine(line4);
+					appendMethods.add(newMethod);
+					
+				}
+				else if(method.getName().equals(config.methodToGenerate+"WithBLOBs")) {
+					Method newMethod=new Method();
+					newMethod.setName(config.methodToGenerate+"WithBLOBsSafely");
+					newMethod.setVisibility(JavaVisibility.PUBLIC);
+					newMethod.setReturnType(new FullyQualifiedJavaType(method.getReturnType().getFullyQualifiedName()) {
+						@Override
+						public String getShortName() {
+							return "default "+super.getShortName();
+						}
+					});
+					for(Parameter param:method.getParameters()) {
+						newMethod.addParameter(param);
+					}
+					
+					String line1="List<%s> list=this.selectByExampleWithBLOBs(%s);";
+					String line2="if(list.isEmpty()) return null;";
+					String line3="if(list.size()>1) {LoggerFactory.getLogger(%s.class).info(\"select one retured multiple rows\");}";
+					String line4="return list.get(0);";
+					newMethod.addBodyLine(String.format(line1, method.getReturnType().getShortName(), method.getParameters().get(0).getName()) );
+					newMethod.addBodyLine(line2);
+					newMethod.addBodyLine(String.format(line3, interfaze.getType().getShortName()));
+					newMethod.addBodyLine(line4);
+					appendMethods.add(newMethod);
+				}
+			}
+			for(Method method:appendMethods){
+				interfaze.addMethod(method);
+			}
+		}
+		return true;
+	}
+
+	@Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
     	String xmlStr=document.getFormattedContent();
     	StringReader reader=new StringReader(xmlStr);
@@ -169,15 +240,19 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
     }
 
     private static final class Config extends BasePluginConfig {
-        private static final String defaultMethodToGenerate = "selectOneByExample";
         private static final String methodToGenerateKey = "methodToGenerate";
+        private static final String forceSelectOneKey = "forceSelectOne";
+        private static final String jdk8EnableKey = "supportJDK8";
 
         private String methodToGenerate;
         private boolean forceSelectOne;//add limit 1 to make sure select one
+        private boolean supportJDK8;//suport jdk8 default method in interface
+        
         protected Config(Properties props) {
             super(props);
-            this.methodToGenerate = props.getProperty(methodToGenerateKey, defaultMethodToGenerate);
-            this.forceSelectOne=Boolean.getBoolean(props.getProperty("forceSelectOne", "false"));
+            this.methodToGenerate = props.getProperty(methodToGenerateKey, "selectOneByExample");
+            this.forceSelectOne=Boolean.parseBoolean(props.getProperty(forceSelectOneKey, "true"));
+            this.supportJDK8=Boolean.parseBoolean(props.getProperty(jdk8EnableKey, "true"));
         }
     }
    
