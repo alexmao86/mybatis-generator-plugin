@@ -97,6 +97,13 @@ public class ResultMapDiectoryPlugin extends PluginAdapter {
 		contructor.addBodyLine("this.actualTableColumnName=name;");
 		columnEnum.addMethod(contructor);
 		
+		Method name=new Method();
+		name.setVisibility(JavaVisibility.PUBLIC);
+		name.setName("col");
+		name.setReturnType(FullyQualifiedJavaType.getStringInstance());
+		name.addBodyLine("return this.actualTableColumnName;");
+		columnEnum.addMethod(name);
+		
 		Method asc=new Method();
 		asc.setVisibility(JavaVisibility.PUBLIC);
 		asc.setName("asc");

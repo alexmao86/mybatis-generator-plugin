@@ -12,7 +12,6 @@ import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
-import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
@@ -82,22 +81,14 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
 			List<Method> appendMethods=new ArrayList<Method>(2);
 			for(Method method : interfaze.getMethods()) {
 				if(method.getName().equals(config.methodToGenerate)) {
-					Method newMethod=new Method();
+					Method newMethod=PluginUtil.clone(method);
+					
 					newMethod.setName(config.methodToGenerate+"Safely");
-					newMethod.setVisibility(JavaVisibility.PUBLIC);
-					newMethod.setReturnType(new FullyQualifiedJavaType(method.getReturnType().getFullyQualifiedName()) {
-						@Override
-						public String getShortName() {
-							return "default "+super.getShortName().replaceFirst("WithBLOBs", "");
-						}
-					});
-					for(Parameter param:method.getParameters()) {
-						newMethod.addParameter(param);
-					}
+					newMethod.setDefault(true);
 					
 					String line1="List<%s> list=this.selectByExample(%s);";
 					String line2="if(list.isEmpty()) return null;";
-					String line3="if(list.size()>1) {LoggerFactory.getLogger(%s.class).info(\"select one retured multiple rows\");}";
+					String line3="if(list.size()>1) {LoggerFactory.getLogger(%s.class).info(\"select one retured {} rows\",list.size());}";
 					String line4="return list.get(0);";
 					newMethod.addBodyLine(String.format(line1, method.getReturnType().getShortName().replaceFirst("WithBLOBs", ""), method.getParameters().get(0).getName()) );
 					newMethod.addBodyLine(line2);
@@ -107,22 +98,13 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
 					
 				}
 				else if(method.getName().equals(config.methodToGenerate+"WithBLOBs")) {
-					Method newMethod=new Method();
+					Method newMethod=PluginUtil.clone(method);
 					newMethod.setName(config.methodToGenerate+"WithBLOBsSafely");
-					newMethod.setVisibility(JavaVisibility.PUBLIC);
-					newMethod.setReturnType(new FullyQualifiedJavaType(method.getReturnType().getFullyQualifiedName()) {
-						@Override
-						public String getShortName() {
-							return "default "+super.getShortName();
-						}
-					});
-					for(Parameter param:method.getParameters()) {
-						newMethod.addParameter(param);
-					}
+					newMethod.setDefault(true);
 					
 					String line1="List<%s> list=this.selectByExampleWithBLOBs(%s);";
 					String line2="if(list.isEmpty()) return null;";
-					String line3="if(list.size()>1) {LoggerFactory.getLogger(%s.class).info(\"select one retured multiple rows\");}";
+					String line3="if(list.size()>1) {LoggerFactory.getLogger(%s.class).info(\"select one returned {} rows\",list.size());}";
 					String line4="return list.get(0);";
 					newMethod.addBodyLine(String.format(line1, method.getReturnType().getShortName(), method.getParameters().get(0).getName()) );
 					newMethod.addBodyLine(line2);

@@ -20,18 +20,24 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Attribute;
+import org.mybatis.generator.api.dom.xml.Element;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.w3c.dom.Comment;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+
+import net.sourceforge.jweb.maven.util.XMLUtil;
 
 /**
  * plugin util for transform w3c.DOM and mybatis generator DOM
@@ -45,37 +51,35 @@ public class PluginUtil {
 	private PluginUtil(){
 		
 	}
-	public static boolean hasMethod(Interface unit, String name) {
-		for(Method method:unit.getMethods()) {
-			if(method.getName().equals(name)){
-				return true;
-			}
-		}
-		return false;
-	}
 	
-	public static boolean hasMethod(TopLevelClass unit, String name) {
+	public static Method getMethod(Interface unit, String... nameCandidates) {
 		for(Method method:unit.getMethods()) {
-			if(method.getName().equals(name)){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public static Method getMethod(Interface unit, String name) {
-		for(Method method:unit.getMethods()) {
-			if(method.getName().equals(name)){
-				return method;
+			for(String name:nameCandidates) {
+				if(method.getName().equals(name)){
+					return method;
+				}
 			}
 		}
 		return null;
 	}
 	
-	public static Method getMethod(TopLevelClass unit, String name) {
+	public static Method getMethod(TopLevelClass unit, String... nameCandidates) {
 		for(Method method:unit.getMethods()) {
-			if(method.getName().equals(name)){
-				return method;
+			for(String name:nameCandidates) {
+				if(method.getName().equals(name)){
+					return method;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static org.w3c.dom.Element getElement(org.w3c.dom.Document dom, String... xpathCandidates) throws XPathExpressionException{
+		for(String xpath:xpathCandidates) {
+			XPathExpression exp=XMLUtil.compile(xpath);
+			org.w3c.dom.Element templateElement = (org.w3c.dom.Element)exp.evaluate(dom, XPathConstants.NODE);
+			if(templateElement!=null) {
+				return templateElement;
 			}
 		}
 		return null;
@@ -94,7 +98,7 @@ public class PluginUtil {
     }
     
     public static org.mybatis.generator.api.dom.xml.Element cloneElement(Node w3cEl, String idAttrValue){
-    	if(!(w3cEl instanceof Element)){
+    	if(!(w3cEl instanceof org.w3c.dom.Element)){
     		return new TextElement(w3cEl.getNodeValue());
     	}
     	XmlElement root=new XmlElement(w3cEl.getNodeName());
@@ -128,10 +132,10 @@ public class PluginUtil {
     					String text = child.getNodeValue().trim();
     					if(text.length()>0) cur.mybatisElement.addElement(new TextElement("<!--"+new Date()+"\n"+text+"-->"));
     				}
-    				else if(child instanceof Element){
+    				else if(child instanceof org.w3c.dom.Element){
     					XmlElement mybatisChild=new XmlElement(child.getNodeName());
     					cur.mybatisElement.addElement(mybatisChild);
-    					queue.offer(new ElementPeer(mybatisChild, (Element)child));
+    					queue.offer(new ElementPeer(mybatisChild, (org.w3c.dom.Element)child));
     				}
     			}
     		}
@@ -195,4 +199,27 @@ public class PluginUtil {
 			this.w3cElement = w3cElement;
 		}
     }
+    /**
+     * replace first child name of nodeName with textElement
+     * @param e
+     * @param nodeName
+     * @param textElement
+     */
+	public static boolean replaceFirst(XmlElement e, String nodeName, TextElement textElement) {
+		int i=0;
+		for(i=0;i<e.getElements().size();i++) {
+			Element ch=e.getElements().get(i);
+			if(ch instanceof XmlElement) {
+				String name=((XmlElement) ch).getName();
+				if(name.equals(nodeName)) {
+					break;
+				}
+			}
+		}
+		if(i>=0&&i<e.getElements().size()) {
+			e.getElements().set(i, textElement);
+			return true;
+		}
+		return false;
+	}
 }
