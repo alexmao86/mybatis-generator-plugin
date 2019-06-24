@@ -20,6 +20,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.mybatis.generator.api.dom.java.Interface;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
@@ -42,6 +45,46 @@ public class PluginUtil {
 	private PluginUtil(){
 		
 	}
+	public static boolean hasMethod(Interface unit, String name) {
+		for(Method method:unit.getMethods()) {
+			if(method.getName().equals(name)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean hasMethod(TopLevelClass unit, String name) {
+		for(Method method:unit.getMethods()) {
+			if(method.getName().equals(name)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static Method getMethod(Interface unit, String name) {
+		for(Method method:unit.getMethods()) {
+			if(method.getName().equals(name)){
+				return method;
+			}
+		}
+		return null;
+	}
+	
+	public static Method getMethod(TopLevelClass unit, String name) {
+		for(Method method:unit.getMethods()) {
+			if(method.getName().equals(name)){
+				return method;
+			}
+		}
+		return null;
+	}
+	
+	public static Method clone(Method template) {
+		return new Method(template);
+	}
+	
     public static Attribute cloneAttribute(Node node){
     	return new Attribute(node.getNodeName(), node.getNodeValue());
     }
