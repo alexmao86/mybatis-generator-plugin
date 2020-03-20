@@ -286,7 +286,8 @@ public class ColumnSubsetPlugin extends PluginAdapter {
 			Method selectSubset=PluginUtil.clone(templateMethod);
 			selectSubset.setName("selectOneByExampleWithSpecifiedColumnsSafely");
 			String line1="List<%s> list=this.selectByExampleWithSpecifiedColumns(%s);";
-			selectSubset.getBodyLines().set(0, String.format(line1, introspectedTable.getTableConfiguration().getDomainObjectName(), selectSubset.getParameters().get(0).getName()));
+			// change from introspectedTable.getFullyQualifiedTable().getDomainObjectName() to introspectedTable.getRules().calculateAllFieldsClass().getShortName()
+            selectSubset.getBodyLines().set(0, String.format(line1, introspectedTable.getRules().calculateAllFieldsClass().getShortName(), selectSubset.getParameters().get(0).getName()));
 			interfaze.addMethod(selectSubset);
 			
 			//对应的变长参数签名方法

@@ -208,7 +208,16 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
         Method m = new Method(config.methodToGenerate+(withBLOBs?"WithBLOBs":""));
         m.setVisibility(method.getVisibility());
         FullyQualifiedJavaType returnType = introspectedTable.getRules().calculateAllFieldsClass();
-        m.setReturnType(returnType);
+        // Fix issue [issue #4](https://github.com/alexmao86/mybatis-generator-plugin/issues/4)
+        String fullClassName = returnType.getFullyQualifiedNameWithoutTypeParameters();
+        if (!withBLOBs && fullClassName.toLowerCase().endsWith(config.blobClassSuffix.toLowerCase())) {
+          String withoutBlobName =
+              fullClassName.substring(0, fullClassName.length() - config.blobClassSuffix.length());
+          m.setReturnType(new FullyQualifiedJavaType(withoutBlobName));
+        } else {
+          m.setReturnType(returnType);
+        }
+        // end of issue #4
         List<String> annotations = method.getAnnotations();
         for (String a : annotations) {
             m.addAnnotation(a);
@@ -225,16 +234,19 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
         private static final String methodToGenerateKey = "methodToGenerate";
         private static final String forceSelectOneKey = "forceSelectOne";
         private static final String jdk8EnableKey = "supportJDK8";
-
+        private static final String blobClassSuffixKey = "blobClassSuffix";
+        
         private String methodToGenerate;
         private boolean forceSelectOne;//add limit 1 to make sure select one
         private boolean supportJDK8;//suport jdk8 default method in interface
+        private String blobClassSuffix;
         
         protected Config(Properties props) {
             super(props);
             this.methodToGenerate = props.getProperty(methodToGenerateKey, "selectOneByExample");
             this.forceSelectOne=Boolean.parseBoolean(props.getProperty(forceSelectOneKey, "true"));
             this.supportJDK8=Boolean.parseBoolean(props.getProperty(jdk8EnableKey, "true"));
+            this.blobClassSuffix = props.getProperty(blobClassSuffixKey, "WithBLOBs");
         }
     }
    
