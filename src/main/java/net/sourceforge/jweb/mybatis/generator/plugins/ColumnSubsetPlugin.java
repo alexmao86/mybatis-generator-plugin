@@ -123,7 +123,8 @@ public class ColumnSubsetPlugin extends PluginAdapter {
 					Method selectSubset=PluginUtil.clone(templateMethod);
 					selectSubset.setName("selectOneByExample"+key+"Safely");
 					String line1="List<%s> list=this.selectByExample%s(%s);";
-					selectSubset.getBodyLines().set(0, String.format(line1, introspectedTable.getTableConfiguration().getDomainObjectName(), key, selectSubset.getParameters().get(0).getName()));
+//					selectSubset.getBodyLines().set(0, String.format(line1, introspectedTable.getTableConfiguration().getDomainObjectName(), key, selectSubset.getParameters().get(0).getName()));
+					selectSubset.getBodyLines().set(0, String.format(line1, introspectedTable.getRules().calculateAllFieldsClass().getShortName(), key, selectSubset.getParameters().get(0).getName()));
 					interfaze.addMethod(selectSubset);
 				}
 			}
